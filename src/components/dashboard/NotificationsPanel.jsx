@@ -1,4 +1,3 @@
-
 export default function NotificationsPanel() {
   const yesterdayNotifs = [
     { name: 'Olivia Smith', action: 'Add a Post', img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&auto=format&fit=crop&q=60', time: '1 d', postPreview: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=50&auto=format&fit=crop&q=60' },
@@ -8,57 +7,71 @@ export default function NotificationsPanel() {
   ];
 
   return (
-    <aside className="w-full bg-white border-l border-gray-100 p-6 hidden lg:block top-0 h-screen overflow-y-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-black">Notifications</h2>
-        <button className="text-xs text-[#3B82F6] font-medium hover:underline">Hide</button>
+    <div className="w-full bg-white flex flex-col h-auto">
+      {/* Header Container */}
+      <div className="flex items-center justify-between mb-5 flex-shrink-0">
+        <h2 className="text-base sm:text-lg font-bold text-gray-950">Notifications</h2>
+        <button className="text-xs text-[#3B82F6] font-semibold hover:underline">Hide</button>
       </div>
 
-      {/* Today */}
-      <div className="space-y-4 mb-6">
-        <h3 className="text-xs font-bold text-[#2D2D2D] tracking-wider">Today</h3>
+      {/* Main Notifications Content Stack */}
+      <div className="space-y-6">
         
-        <div className="flex items-center space-x-3">
-          <img className="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=60" alt="" />
-          <div className="flex-1">
-            <p className="text-xs text-[#000000] font-medium">
-              <span className="font-semibold text-gray-900">Jenny Williamson</span> Start Follow You
-            </p>
-            <span className="text-[10px] text-gray-400">2 hr</span>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-3">
-          <img className="w-8 h-8 rounded-full object-cover" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=60" alt="" />
-          <div className="flex-1">
-            <p className="text-xs text-[#000000] font-medium">
-              <span className="font-semibold text-gray-900">Sana Fatima</span> Start Follow You
-            </p>
-            <span className="text-[10px] text-gray-400">4 hr</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Yesterday */}
-      <div className="space-y-4">
-        <h3 className="font-24 font-semibold text-[#2D2D2D] tracking-wider">Yesterday</h3>
-        {yesterdayNotifs.map((notif, index) => (
-          <div key={index} className="flex items-center justify-between space-x-3">
-            <div className="flex items-center space-x-3 flex-1">
-              <img className="w-8 h-8 rounded-full object-cover" src={notif.img} alt="" />
-              <div>
-                <p className="text-xs text-[#000000] font-medium leading-snug">
-                  <span className="font-semibold text-gray-900">{notif.name}</span> {notif.action}
-                </p>
-                <span className="text-[10px] text-gray-400">{notif.time}</span>
-              </div>
+        {/* ====== TODAY SECTION ====== */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Today</h3>
+          
+          <div className="flex items-center space-x-3 group cursor-pointer">
+            <img className="w-9 h-9 rounded-full object-cover border border-gray-100" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=60" alt="" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-800 font-medium leading-snug break-words">
+                <span className="font-bold text-gray-900">Jenny Williamson</span> Start Follow You
+              </p>
+              <span className="text-[10px] text-gray-400 font-medium mt-0.5 block">2 hr</span>
             </div>
-            {notif.postPreview && (
-              <img className="w-8 h-8 rounded-md object-cover flex-shrink-0 border border-gray-100" src={notif.postPreview} alt="" />
-            )}
           </div>
-        ))}
+
+          <div className="flex items-center space-x-3 group cursor-pointer">
+            <img className="w-9 h-9 rounded-full object-cover border border-gray-100" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=60" alt="" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-800 font-medium leading-snug break-words">
+                <span className="font-bold text-gray-900">Sana Fatima</span> Start Follow You
+              </p>
+              <span className="text-[10px] text-gray-400 font-medium mt-0.5 block">4 hr</span>
+            </div>
+          </div>
+        </div>
+
+        {/* ====== YESTERDAY SECTION ====== */}
+        <div className="space-y-4">
+          {/* 'font-24' bug fixed, replaced with consistent text styling scales */}
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Yesterday</h3>
+          
+          {yesterdayNotifs.map((notif, index) => (
+            <div key={index} className="flex items-center justify-between gap-3 group cursor-pointer">
+              
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <img className="w-9 h-9 rounded-full object-cover border border-gray-100" src={notif.img} alt="" />
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-800 font-medium leading-snug break-words">
+                    <span className="font-bold text-gray-900">{notif.name}</span> {notif.action}
+                  </p>
+                  <span className="text-[10px] text-gray-400 font-medium mt-0.5 block">{notif.time}</span>
+                </div>
+              </div>
+
+              {/* Right post preview image alignment */}
+              {notif.postPreview && (
+                <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0 border border-gray-100 shadow-2xs">
+                  <img className="w-full h-full object-cover" src={notif.postPreview} alt="Preview" />
+                </div>
+              )}
+
+            </div>
+          ))}
+        </div>
+
       </div>
-    </aside>
+    </div>
   );
 }
