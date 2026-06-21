@@ -43,8 +43,10 @@ export default function Events() {
   };
 
   return (
-    <div className="flex-1 bg-white px-6 py-5 overflow-y-auto hide-scrollbar h-screen">
-      <h1 className="font-bold text-[#000000] mb-6">Explore Events</h1>
+    <div className="flex-1 h-full bg-white overflow-y-auto hide-scrollbar w-full px-4 sm:px-4 md:px-6 lg:px-8 py-4 md:py-1 lg:py-1">
+      <h1 className="hidden md:block font-bold text-[#2D2D2D] text-xl md:text-2xl mb-6">
+        Explore Events
+      </h1>
       <div className="relative mb-10">
         <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
           <svg

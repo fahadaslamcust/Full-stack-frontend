@@ -20,11 +20,11 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex-1 flex flex-col lg:flex-row h-screen bg-[#ffffff] overflow-hidden w-full p-0 sm:p-4 md:p-6 lg:p-8 gap-4 md:gap-6">
+    <div className="flex-1 flex flex-col lg:flex-row h-screen bg-[#ffffff] w-full p-0 px-6 py-4 md:py-1 lg:py-1 gap-4 md:gap-6">
       <section className="w-full lg:w-[400px] flex flex-col justify-between h-full">
-        <div className="space-y-6 overflow-y-auto hide-scrollbar">
+        <div className="space-y-4 overflow-y-auto hide-scrollbar">
           <div>
-            <h1 className="font-bold text-gray-900 tracking-tight">Settings</h1>
+            <h1 className="hidden md:block font-bold text-[#2D2D2D] tracking-tight">Settings</h1>
           </div>
            <div className="flex items-center gap-3 bg-[#F9FAFB] p-4 rounded-2xl border border-gray-100">
         <img
@@ -41,8 +41,8 @@ export default function Settings() {
             isDarkMode={isDarkMode} 
             onToggleTheme={toggleTheme} 
           />
-        </div>
         <LogoutButton onLogout={handleLogout} />
+        </div>
       </section>
       <section className="hidden lg:flex flex-1 flex-col h-full pt-5 overflow-y-auto hide-scrollbar">
         <div className="border-b border-gray-100 pb-4 mb-6">
