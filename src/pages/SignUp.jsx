@@ -3,25 +3,35 @@ import AuthLayout from "../layouts/AuthLayout";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [avatar, setAvatar] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatar(URL.createObjectURL(file));
+    }
+  };
 
   return (
     <AuthLayout
       leftContent={
-        <div className="max-w-md">
-          <h1 className="font-bold text-gray-600 mb-10">Create Account</h1>
-          <p className="text-slate-600 text-lg mb-10">
-            Join Campus Connect and start sharing updates, exploring events, and
-            connecting with peers.
+        <div className="w-full max-w-sm md:max-w-md px-2 sm:px-4 text-center md:text-left">
+          {/* Responsive Header Typography */}
+          <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-gray-800 mb-4 md:mb-6 leading-tight">
+            Create Account
+          </h1>
+          <p className="text-slate-600 text-sm sm:text-base md:text-lg mb-8 md:mb-10 leading-relaxed">
+            Join Campus Connect and start sharing updates, exploring events, and connecting with peers.
           </p>
-          <div className="flex flex-col items-center mt-10">
+          
+          {/* Logo Alignment */}
+          <div className="flex flex-col items-center mt-6 md:mt-10">
             <img
-              className="w-36 h-36 text-[#3B82F6]"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+              className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 object-contain"
               src="/images/login-logo.png"
+              alt="Campus Connect Logo"
             />
-
-            <h2 className="text-3xl font-bold text-blue-500 mt-3">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-500 mt-2">
               Campus Connect
             </h2>
           </div>
@@ -29,36 +39,52 @@ export default function SignUp() {
       }
     >
       <form
-        className="w-full max-w-md flex flex-col"
+        className="w-full max-w-md lg:max-w-lg flex flex-col justify-center px-4 sm:px-6 md:px-0 mx-auto"
         onSubmit={(e) => e.preventDefault()}
       >
-        <div className="flex justify-center mb-8">
-          <div className="relative w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-            <span className="text-gray-500 text-xs">Upload</span>
-
-            <div className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow">
+        {/* Responsive Profile Avatar Upload Area */}
+        <div className="flex justify-center mb-6 sm:mb-8">
+          <label className="relative w-20 h-20 sm:w-24 sm:h-24 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer overflow-hidden border border-gray-200 hover:bg-gray-200 transition group">
+            {avatar ? (
+              <img src={avatar} alt="Profile preview" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-gray-400 text-[11px] sm:text-xs font-medium">Upload</span>
+            )}
+            
+            {/* Camera Overlay Icon */}
+            <div className="absolute bottom-1 right-1 bg-white p-1 sm:p-1.5 rounded-full shadow-md text-xs sm:text-sm group-hover:scale-105 transition">
               📷
             </div>
-          </div>
-        </div>
-        <Input label="Full Name" placeholder="John Doe" />
-        <Input label="Email" placeholder="example@gmail.com" type="email" />
-        <Input label="University Name" placeholder="Your University" />
-        <div className="flex flex-col relative mb-4">
-          <label className="text-sm font-medium text-gray-900 mb-1">
-            Password
+            <input 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handleImageChange} 
+            />
           </label>
+        </div>
 
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="********"
-            className="border-b border-gray-300 py-2 pr-8 focus:outline-none focus:border-[#3B82F6] text-sm"
-          />
-
-          <button
+        {/* Inputs Stack */}
+        <div className="space-y-4 sm:space-y-5">
+          <Input label="Full Name" placeholder="John Doe" />
+          <Input label="Email" placeholder="example@gmail.com" type="email" />
+          <Input label="University Name" placeholder="Your University" />
+          
+          {/* Password Input Wrapper */}
+          <div className="flex flex-col relative">
+            <label className="text-xs sm:text-sm font-medium text-gray-900 mb-1">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="********"
+                className="w-full border-b border-gray-300 py-1.5 sm:py-2 pr-8 focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400 text-sm"
+              />
+              <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-1 bottom-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute right-1 bottom-2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -80,15 +106,22 @@ export default function SignUp() {
                   />
                 </svg>
               </button>
+            </div>
+          </div>
         </div>
 
-        {/* Button */}
-        <button className="w-full mt-4 bg-[#3B82F6] text-white py-2 rounded-full hover:bg-blue-600">
+        {/* Submit Button */}
+        <button 
+          type="submit" 
+          className="w-full mt-6 sm:mt-8 bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-2.5 px-4 rounded-full transition-colors text-sm shadow-sm active:scale-[0.99]"
+        >
           Sign Up
         </button>
-        <div className="text-center text-xs text-gray-600 mt-4">
+
+        {/* Alternative Nav link */}
+        <div className="text-center text-xs text-gray-500 mt-5">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-500 hover:underline">
+          <a href="/" className="text-[#3B82F6] hover:underline font-medium ml-0.5">
             Sign In
           </a>
         </div>
@@ -97,13 +130,14 @@ export default function SignUp() {
   );
 }
 
+// Optimized Responsive Sub-component
 function Input({ label, ...props }) {
   return (
-    <div className="flex flex-col mb-4">
-      <label className="text-sm font-medium text-gray-900 mb-1">{label}</label>
+    <div className="flex flex-col">
+      <label className="text-xs sm:text-sm font-medium text-gray-900 mb-1">{label}</label>
       <input
         {...props}
-        className="border-b border-gray-300 py-2 focus:outline-none focus:border-[#3B82F6] text-sm"
+        className="w-full border-b border-gray-300 py-1.5 sm:py-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
       />
     </div>
   );

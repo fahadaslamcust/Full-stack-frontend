@@ -15,7 +15,7 @@ export default function Dashboard() {
         <PostFeed />
       </section>
 
-      <aside className="w-full xl:w-[360px] shrink-0">
+      <aside className="w-full xl:w-90 shrink-0">
         <NotificationsPanel />
       </aside>
     </div>

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import EventCard from "../components/event/EventCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Events() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const eventsData = [
     {
@@ -47,7 +49,7 @@ export default function Events() {
       <h1 className="hidden md:block font-bold text-[#2D2D2D] text-xl md:text-2xl mb-6">
         Explore Events
       </h1>
-      <div className="relative mb-10">
+      <div className="relative mb-5">
         <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
           <svg
             className="w-5 h-5 text-gray-400"
@@ -72,7 +74,13 @@ export default function Events() {
           className="w-full bg-[#F3F4F6] text-gray-700 pl-12 pr-4 py-4 rounded-2xl border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+       <button
+          onClick={() => navigate("/create-event")}
+          className="bg-[#4285F4] text-white px-4 py-2 rounded-xl hover:bg-blue-600 "
+        >
+          Create Event
+        </button>
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {filteredEvents.map((event) => (
           <EventCard
             key={event.id}

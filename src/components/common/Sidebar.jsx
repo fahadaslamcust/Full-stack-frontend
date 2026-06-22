@@ -39,10 +39,10 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64  bg-white border-r border-gray-100 flex flex-col justify-between p-6 hidden md:flex sticky top-0 h-screen flex-shrink-0">
+    <aside className="w-64  bg-white border-r border-gray-100 hidden flex-col justify-between p-6 md:flex sticky top-0 h-screen shrink-0">
       <div className="space-y-8 flex flex-col h-[calc(100%-60px)]">
         {/* Logo */}
-        <div className="flex items-center space-x-2 px-3 flex-shrink-0">
+        <div className="flex items-center space-x-2 px-3 shrink-0">
           <img
             className="w-8 h-8 object-contain"
             src="/images/login-logo.png"
@@ -62,7 +62,7 @@ const Sidebar = () => {
                   to={item.path}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all ${
                     isSelected
-                      ? "bg-[#3B82F6] text-white shadow-md"
+                      ? "bg-[#4285F4] text-white shadow-md"
                       : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
@@ -85,16 +85,15 @@ const Sidebar = () => {
           <div className="pl-2 mt-auto">
             <button 
               onClick={() => navigate("/create-post")}
-              className="w-10 h-10 flex items-center justify-center space-x-2 bg-[#3B82F6] hover:bg-blue-600 text-white font-medium text-sm rounded-full transition-all shadow-sm hover:shadow-md"
+              className="w-10 h-10 flex items-center justify-center space-x-2 bg-[#4285F4] hover:bg-blue-600 text-white font-medium text-sm rounded-full transition-all shadow-sm hover:shadow-md"
             >
-              <Plus className="w-5 h-5 flex-shrink-0" />
+              <Plus className="w-5 h-5 shrink-0" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* User Profile Footer */}
-      <div className="flex items-center space-x-3 border-t border-gray-100 pt-4 flex-shrink-0">
+      <div className="flex items-center space-x-3 border-t border-gray-100 pt-4 shrink-0">
         <img
           className="w-10 h-10 rounded-full object-cover border border-gray-200"
           src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=60"
