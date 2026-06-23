@@ -48,7 +48,7 @@ export default function EventCard({ title, image, dateBadge, location, time, onR
         <div className="pt-2">
           <button 
             onClick={onRegister}
-            className="bg-[#3B82F6] text-white text-sm font-semibold px-10 py-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm shadow-blue-100"
+            className="bg-[#4285F4] text-white text-sm font-semibold px-10 py-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm shadow-blue-100"
           >
             Register Now
           </button>

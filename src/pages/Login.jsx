@@ -7,54 +7,61 @@ export default function Login() {
   return (
     <AuthLayout
       leftContent={
-        <div className="max-w-md">
-          <h1 className="font-bold text-gray-600 mb-10">
-           Welcome Back!
+        <div className="w-full max-w-sm md:max-w-md px-2 sm:px-4 text-center md:text-left">
+          {/* Responsive Welcome Text */}
+          <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl text-gray-800 mb-4 md:mb-10 leading-tight">
+            Welcome Back!
           </h1>
-          <p className="text-slate-600 text-lg mb-12">
+          <p className="text-slate-600 text-sm sm:text-base md:text-lg mb-8 md:mb-12 leading-relaxed">
             Sign in to your account to connect with your campus community.
           </p>
-          <div className="flex flex-col items-center mt-10">
+          
+          {/* Brand/Logo Layout adjustments */}
+          <div className="flex flex-col items-center mt-6 md:mt-10">
             <img
-              className="w-36 h-36 text-[#3B82F6]"
-              viewBox="0 0 24 24"
-              fill="currentColor"
+              className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 object-contain"
               src="/images/login-logo.png"
+              alt="Campus Connect Logo"
             />
-            <h2 className="text-4xl font-bold text-blue-500">Campus Connect</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-500 mt-2">
+              Campus Connect
+            </h2>
           </div>
         </div>
       }
     >
       <form
-        className="w-full max-w-lg flex flex-col"
+        className="w-full max-w-md lg:max-w-lg flex flex-col justify-center px-4 sm:px-6 md:px-0 mx-auto"
         onSubmit={(e) => e.preventDefault()}
       >
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-5 sm:space-y-6">
+          {/* Email Field */}
           <div className="flex flex-col">
-            <label className="text-gray-900 font-medium text-sm mb-2">
+            <label className="text-gray-900 font-medium text-xs sm:text-sm mb-1.5">
               Email
             </label>
             <input
               type="email"
               placeholder="www..@gmail.com"
-              className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400 text-sm"
+              className="w-full border-b border-gray-300 py-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
             />
           </div>
+          
+          {/* Password Field */}
           <div className="flex flex-col relative">
-            <label className="text-gray-900 font-medium text-sm mb-2">
+            <label className="text-gray-900 font-medium text-xs sm:text-sm mb-1.5">
               Password
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="**********"
-                className="w-full border-b border-gray-300 py-2 pr-8 focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400 text-sm"
+                className="w-full border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-1 bottom-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                className="absolute right-1 bottom-2 text-gray-400 hover:text-gray-600 focus:outline-none p-1"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -79,25 +86,31 @@ export default function Login() {
             </div>
           </div>
         </div>
-        <div className="text-right mt-2">
+
+        {/* Action Links */}
+        <div className="text-right mt-2.5">
           <a
-            href="#forgot"
+            href="/forget-password"
             className="text-xs text-[#3B82F6] hover:underline font-medium"
           >
             Forget Password
           </a>
         </div>
+
+        {/* Submit Action */}
         <button
           type="submit"
-          className="w-full mt-8 bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-full transition-colors text-sm shadow-sm"
+          className="w-full mt-6 sm:mt-8 bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-2.5 px-4 rounded-full transition-colors text-sm shadow-sm active:scale-[0.99]"
         >
           Sign In
         </button>
-        <div className="mt-4 text-center text-xs text-gray-600">
+
+        {/* Alternative Route Link */}
+        <div className="mt-5 text-center text-xs text-gray-500">
           New user?{" "}
           <a
             href="/signup"
-            className="text-[#3B82F6] hover:underline font-medium"
+            className="text-[#3B82F6] hover:underline font-medium ml-0.5"
           >
             Sign Up
           </a>
