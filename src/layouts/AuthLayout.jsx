@@ -1,6 +1,6 @@
 const AuthLayout = ({ children, leftContent }) => {
   return (
-    <div className="min-h-screen w-full bg-slate-50 flex">
+    <div className="min-h-screen w-full bg-white flex">
       <div className="hidden lg:flex w-1/2 flex-col justify-center items-center px-16 border-r border-slate-200">
         {leftContent}
       </div>

@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 :root {
-   width: 100%;
+  width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
-   max-width: none;
+  max-width: none;
+
   --text: #8C8C8C;
   --text-h: #08060d;
   --bg: #fff;
@@ -16,13 +17,13 @@
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+    rgba(0, 0, 0, 0.1) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui,sans-serif;
+  --sans: system-ui, sans-serif;
   --heading: system-ui, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -30,15 +31,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-   
     --text: #9ca3af;
     --text-h: #f3f4f6;
     --bg: #16171d;
@@ -48,58 +44,46 @@
     --accent-border: rgba(192, 132, 252, 0.5);
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
+      rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
   }
 
-#social .button-icon {
+  #social .button-icon {
     filter: invert(1) brightness(2);
   }
 }
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-body {
-  margin: 0;
-}
-h1 {
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  font-size: 40px;
-  @media (max-width: 1024px) {
-    font-size: 30px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 24px;
-  }
-}
-p {
-  margin: 0;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Remove Chrome Autofill Background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #1f2937 !important;
+  caret-color: #1f2937;
+  transition: background-color 9999s ease-in-out 0s;
 }

@@ -1,7 +1,13 @@
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
+const Sidebar = ({
+  isOpen,
+  onClose,
+  isCollapsed,
+  onToggleCollapse,
+  onNotificationClick,
+}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -60,17 +66,17 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
     bg-white
     border-r border-gray-100
     flex flex-col justify-between
-    ${isCollapsed ? "p-3" : "p-6"}
+    ${isCollapsed ? "p-5" : "p-2 md:p-6"}
     transition-all duration-300
     ${isOpen ? "translate-x-0" : "-translate-x-full"}
     md:translate-x-0
   `}
       >
-        <div className="space-y-8 flex flex-col h-[calc(100%-60px)]">
+        <div className="md:space-y-8 flex flex-col h-[calc(100%-40px)]">
           {/* Logo */}
           <div
             className={`flex items-center ${
-              isCollapsed ? "justify-center" : "px-3"
+              isCollapsed ? "justify-center" : "px-2"
             }`}
           >
             <img
@@ -81,7 +87,7 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
           </div>
           <button
             onClick={onToggleCollapse}
-            className="hidden md:flex absolute -right-3 top-8 w-7 h-7 bg-white border rounded-full shadow items-center justify-center"
+            className="hidden md:flex absolute -right-3 top-8 w-7 h-7 hover:bg-[#4285F4] hover:text-white hover:border-[#4285F4]  bg-white border rounded-full shadow items-center justify-center"
           >
             {isCollapsed ? (
               <ChevronRight size={16} />
@@ -99,13 +105,19 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
                   <Link
                     key={item.name}
                     to={item.path}
-                    onClick={onClose}
+                    onClick={(e) => {
+                      if (item.name === "Notifications") {
+                        e.preventDefault();
+                        onNotificationClick();
+                      }
+                      onClose();
+                    }}
                     className={`flex items-center rounded-xl py-3 text-sm font-medium transition-all ${
                       isCollapsed ? "justify-center px-0" : "gap-3 px-4"
                     } ${
                       isSelected
                         ? "bg-[#4285F4] text-white shadow-md"
-                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                        : "text-gray-500 hover:bg-gray-50"
                     }`}
                   >
                     <img
@@ -144,17 +156,24 @@ const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
         </div>
 
         {/* User */}
-        <div className="flex items-center gap-3 border-t border-gray-100 pt-4">
+        <div
+          className={`mt-auto border-t border-gray-100 pt-4 flex items-center ${
+            isCollapsed ? "justify-center" : "gap-3 px-2"
+          }`}
+        >
           <img
-            className="w-10 h-10 rounded-full object-cover border border-gray-200"
+            className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0"
             src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=60"
             alt="User Avatar"
           />
-
-          <div>
-            <p className="text-sm font-semibold text-gray-900">Wajiha</p>
-            <p className="text-xs text-gray-400">CSS Student</p>
-          </div>
+          {!isCollapsed && (
+            <div className="overflow-hidden">
+              <p className="text-sm font-semibold text-gray-900 truncate">
+                Wajiha
+              </p>
+              <p className="text-xs text-gray-400 truncate">CSS Student</p>
+            </div>
+          )}
         </div>
       </aside>
     </>

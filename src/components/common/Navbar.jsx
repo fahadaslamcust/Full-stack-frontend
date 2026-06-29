@@ -1,7 +1,7 @@
 import { Menu, Bell } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
-export default function Navbar({ onMenuClick }) {
+export default function Navbar({ onMenuClick, onNotificationClick }) {
   const location = useLocation();
   const getHeaderTitle = () => {
     const path = location.pathname;
@@ -31,7 +31,7 @@ export default function Navbar({ onMenuClick }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="p-1.5 hover:bg-gray-50 text-gray-500 rounded-full relative transition">
+        <button onClick={onNotificationClick} className="p-1.5 hover:bg-gray-50 text-gray-500 rounded-full relative transition">
           <Bell className="w-4 h-4" />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
         </button>

@@ -45,8 +45,8 @@ export default function Events() {
   };
 
   return (
-    <div className="flex-1 h-full bg-white overflow-y-auto hide-scrollbar w-full px-4 sm:px-4 md:px-6 lg:px-8 py-4 md:py-1 lg:py-1">
-      <h1 className="hidden md:block font-bold text-[#2D2D2D] text-xl md:text-2xl mb-6">
+    <div className="flex-1 h-full bg-white overflow-y-auto hide-scrollbar w-full p-4 md:p-6">
+      <h1 className="hidden md:block font-bold text-[#2D2D2D] text-xl md:text-2xl mb-4">
         Explore Events
       </h1>
       <div className="relative mb-5">

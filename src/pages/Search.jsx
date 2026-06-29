@@ -5,7 +5,7 @@ export default function Search() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
-    <div className="px-6 py-4 md:py-1 lg:py-1 gap-4 h-screen bg-[#ffffff] ">
+    <div className="flex-1 h-full bg-white overflow-y-auto hide-scrollbar w-full p-4 md:p-6">
       <h1 className="text-[#2D2D2D] font-bold mb-4">Search</h1>
       <button
         onClick={() => setModalOpen(true)}
