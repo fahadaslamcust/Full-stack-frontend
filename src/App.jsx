@@ -12,6 +12,8 @@ import CreateEvent from "./pages/CreateEvent";
 import CreatePost from "./pages/CreatePost";
 import ForgetPassword from "./pages/ForgetPassword";
 import UserProfile from "./pages/UserProfile";
+import OtpVerification from "./pages/OtpVarification";
+import ProfileCompletion from "./pages/ProfileCompletion";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/otp-verification" element={<OtpVerification />} />
+        <Route path="/profile-completion" element={<ProfileCompletion />} />
         <Route element={<DashboardLayout />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/events" element={<Events />} />
