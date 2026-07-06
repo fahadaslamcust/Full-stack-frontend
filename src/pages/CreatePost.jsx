@@ -1,5 +1,5 @@
-import { Search, UserPlus, Image, Edit2, Trash2, X, Clock } from 'lucide-react';
-import { useState } from 'react';
+import { Search, UserPlus, Image, Edit2, Trash2, X, Clock, XCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePosts, useCreatePost } from '../hooks/usePosts';
 import { useCurrentUser } from '../hooks/useUsers';
@@ -31,6 +31,10 @@ export default function CreatePost() {
   const networkUsers = Array.from(new Map(rawNetworkList.map(u => [u._id || u.id, u])).values());
 
   const [postText, setPostText] = useState('');
+  const [mediaFile, setMediaFile] = useState(null);
+  const [mediaPreview, setMediaPreview] = useState(null);
+  const fileInputRef = useRef(null);
+
   const [editingPostId, setEditingPostId] = useState(null);
   const [editText, setEditText] = useState('');
   const [postToDelete, setPostToDelete] = useState(null);
@@ -48,17 +52,42 @@ export default function CreatePost() {
     );
   };
 
+  const handleMediaChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMediaFile(file);
+      setMediaPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const clearMedia = () => {
+    setMediaFile(null);
+    setMediaPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handleCreatePost = (e) => {
     e.preventDefault();
-    if (!postText.trim()) return;
+    if (!postText.trim() && !mediaFile) return;
 
-    createPostMutation.mutate({
-      content: postText,
-      // If backend supports tagging, add tags here
-      // tags: friends.filter(f => f.checked).map(f => f.name)
-    }, {
+    let payload;
+    if (mediaFile || taggedIds.length > 0) {
+      payload = new FormData();
+      if (postText.trim()) payload.append('content', postText);
+      else payload.append('content', ' '); // Fallback if schema requires content
+      if (mediaFile) payload.append('media', mediaFile);
+      if (taggedIds.length > 0) {
+        taggedIds.forEach(id => payload.append('taggedUsers[]', id));
+      }
+    } else {
+      payload = { content: postText };
+    }
+
+    createPostMutation.mutate(payload, {
       onSuccess: () => {
         setPostText('');
+        clearMedia();
+        setTaggedIds([]);
         navigate('/dashboard');
       },
       onError: (err) => {
@@ -91,15 +120,15 @@ export default function CreatePost() {
 
 
   return (
-    <div className="min-h-screen bg-[#F9F9F9] p-3 sm:p-6 md:p-8 font-sans text-gray-800 flex flex-col items-center justify-start gap-6">
+    <div className="h-full overflow-y-auto bg-[#F9F9F9] p-3 sm:p-6 md:p-8 font-sans text-gray-800 pb-20">
       
       {/* ================= MAIN CONTAINER ================= */}
       {/* Responsive layout: flex-col on mobile, flex-row on md screens */}
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row min-h-125">  
+      <div className="w-full max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row h-auto overflow-hidden shrink-0 mb-6">  
         
         {/* LEFT COLUMN: Add a Post Form */}
         {/* Mobile: takes full width, Desktop: takes equal flex space */}
-        <form onSubmit={handleCreatePost} className="flex-1 p-5 sm:p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col justify-between gap-6">
+        <form onSubmit={handleCreatePost} className="flex-1 p-5 sm:p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col justify-start gap-6">
           <div className="w-full">
             <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Add a Post</h1>
             
@@ -120,15 +149,39 @@ export default function CreatePost() {
               className="w-full h-36 p-4 bg-[#F5F6F8] rounded-2xl resize-none text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition"
               placeholder="What's on your mind?"
             />
+            
+            {mediaPreview && (
+              <div className="relative mt-3">
+                <img src={mediaPreview} alt="Preview" className="w-full max-h-64 object-cover rounded-xl border border-gray-200" />
+                <button 
+                  type="button" 
+                  onClick={clearMedia}
+                  className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+                >
+                  <XCircle size={20} className="text-gray-600" />
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="space-y-3 w-full">
+          <div className="space-y-3 w-full mt-auto">
             <button type="button" className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-blue-600 text-blue-600 rounded-xl font-medium text-sm hover:bg-blue-50 transition">
               <UserPlus size={16} /> Tag Friend ({taggedIds.length})
             </button>
-            <button type="button" className="w-full flex items-center justify-center gap-2 py-3 px-4 border text-[#4285F4] rounded-xl font-medium text-sm hover:bg-blue-50 transition">
+            <button 
+              type="button" 
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border text-[#4285F4] rounded-xl font-medium text-sm hover:bg-blue-50 transition"
+            >
               <Image size={16} /> Add Photo / Video
             </button>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleMediaChange} 
+              accept="image/*,video/*" 
+              className="hidden" 
+            />
             <button 
               type="submit" 
               disabled={createPostMutation.isPending}
@@ -193,7 +246,7 @@ export default function CreatePost() {
       </div>
 
       {/* ================= FEEDS SECTION ================= */}
-      <div className="w-full max-w-4xl space-y-4">
+      <div className="w-full max-w-4xl mx-auto space-y-4 shrink-0">
         <h3 className="text-lg font-bold text-gray-700 px-1">Recent Feed Posts</h3>
         
         {isLoading ? (
@@ -227,9 +280,9 @@ export default function CreatePost() {
               
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 min-w-0">
-                  <img src={post.creator?.profilePicture || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"} alt={post.creator?.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
+                  <img src={post.author?.avatar ? (post.author.avatar.startsWith('http') ? post.author.avatar : `${apiClient.defaults.baseURL.replace('/api/v1', '')}${post.author.avatar}`) : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150"} alt={post.author?.name} className="w-10 h-10 rounded-full object-cover shrink-0" />
                   <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-gray-900 truncate">{post.creator?.name || "Unknown Author"}</h4>
+                    <h4 className="text-sm font-bold text-gray-900 truncate">{post.author?.name || "Unknown Author"}</h4>
                     <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
                       <Clock size={12} className="shrink-0" />
                       <span className="truncate">{new Date(post.createdAt).toLocaleDateString()}</span>
@@ -266,13 +319,22 @@ export default function CreatePost() {
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-700 whitespace-pre-wrap wrap-break-word">{post.text}</p>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap break-words">{post.text || post.content}</p>
+                  {post.mediaUrl && (
+                    <img 
+                      src={post.mediaUrl.startsWith('http') ? post.mediaUrl : `${apiClient.defaults.baseURL.replace('/api/v1', '')}${post.mediaUrl}`} 
+                      alt="Post media" 
+                      className="w-full max-h-96 object-cover rounded-xl border border-gray-100" 
+                    />
+                  )}
+                </div>
               )}
 
-              {post.tagged && post.tagged.length > 0 && (
+              {post.taggedUsers && post.taggedUsers.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-50">
-                  {post.tagged.map((t, idx) => (
-                    <span key={idx} className="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full font-medium max-w-xs truncate">@{t}</span>
+                  {post.taggedUsers.map((t, idx) => (
+                    <span key={idx} className="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full font-medium max-w-xs truncate">@{t.name || t}</span>
                   ))}
                 </div>
               )}

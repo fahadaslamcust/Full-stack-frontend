@@ -16,7 +16,8 @@ const Sidebar = () => {
 
   const userName = currentUser?.name || storedUser?.name || "User";
   const userRole = currentUser?.university || storedUser?.university || "Student";
-  const userAvatar = currentUser?.profilePicture || storedUser?.profilePicture || null;
+  const userAvatarRaw = currentUser?.avatar || storedUser?.avatar || null;
+  const userAvatar = userAvatarRaw ? (userAvatarRaw.startsWith('http') ? userAvatarRaw : `http://localhost:5000${userAvatarRaw}`) : null;
 
   const menuItems = [
     { name: "Home", path: "/dashboard", icon: "/icons/home.png" },
@@ -65,8 +66,8 @@ const Sidebar = () => {
                     alt={item.name}
                     className={`w-6 h-6 object-contain ${
                       isSelected
-                        ? "invert brightness-0 saturate-100"
-                        : "opacity-100"
+                        ? "brightness-0 invert"
+                        : "brightness-0 opacity-60"
                       }`}
                   />
                   <span>{item.name}</span>

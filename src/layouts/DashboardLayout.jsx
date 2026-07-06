@@ -21,7 +21,7 @@ export default function DashboardLayout() {
         <Navbar onMenuClick={() => setIsSidebarOpen(true)} />
 
         {/* Router Render Target Page Viewports */}
-        <main className="flex-1 h-full w-full overflow-hidden">
+        <main className="flex-1 w-full overflow-hidden flex flex-col">
           <Outlet context={{ isSidebarOpen, setIsSidebarOpen }} />
         </main>
 

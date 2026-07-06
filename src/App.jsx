@@ -12,6 +12,7 @@ import CreateEvent from "./pages/CreateEvent";
 import CreatePost from "./pages/CreatePost";
 import ForgetPassword from "./pages/ForgetPassword";
 import UserProfile from "./pages/UserProfile";
+import Notifications from "./pages/Notifications";
 import OtpVerification from "./pages/OtpVarification";
 import ProfileCompletion from "./pages/ProfileCompletion";
 
@@ -29,6 +30,7 @@ function App() {
         <Route path="/dashboard/messages" element={<Messages/>} />
         <Route path="/dashboard/search" element={<Search />} />
         <Route path="/dashboard/settings" element={<Settings />} />
+        <Route path="/dashboard/notifications" element={<Notifications />} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/dashboard/user/:id" element={<UserProfile />} />

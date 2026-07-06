@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Users, UserPlus, UserMinus } from "lucide-react";
+import { ArrowLeft, Users, UserPlus, UserMinus, MessageSquare } from "lucide-react";
 import apiClient from "../api/client";
 import { useFollowUser, useUnfollowUser, useNetwork } from "../hooks/useUsers";
 
@@ -84,13 +84,20 @@ export default function UserProfile() {
                 {bio && <p className="text-sm text-gray-500 mt-1">{bio}</p>}
               </div>
 
-              {/* Follow / Unfollow Button */}
-              <div className="self-start sm:self-end pt-2">
+              {/* Actions */}
+              <div className="self-start sm:self-end pt-2 flex gap-2">
+                <button
+                  onClick={() => navigate(`/dashboard/messages`, { state: { targetUser: user } })}
+                  className="flex items-center gap-1.5 px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-full transition shadow-sm"
+                >
+                  <MessageSquare size={14} />
+                  Message
+                </button>
                 {isFollowing ? (
                   <button
                     onClick={() => unfollowMutation.mutate(id)}
                     disabled={unfollowMutation.isPending}
-                    className="flex items-center gap-1.5 px-5 py-2 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 text-sm font-semibold rounded-full transition"
+                    className="flex items-center gap-1.5 px-5 py-2 bg-red-50 hover:bg-red-100 disabled:opacity-50 text-red-600 text-sm font-semibold rounded-full transition"
                   >
                     <UserMinus size={14} />
                     Unfollow

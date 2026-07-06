@@ -4,6 +4,8 @@ import PreferenceAndPrivacy from "../components/setting/PreferenceAndPrivacy";
 import LogoutButton from "../components/setting/LogoutButton";
 import { useCurrentUser, useUpdateProfile } from "../hooks/useUsers";
 import { useNavigate } from "react-router-dom";
+import apiClient from "../api/client";
+import { toast } from "react-toastify";
 
 export default function Settings() {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -30,13 +32,13 @@ export default function Settings() {
           </div>
            <div className="flex items-center gap-3 bg-[#F9FAFB] p-4 rounded-2xl border border-gray-100">
         <img
-          src={user?.avatar || "https://i.pravatar.cc/100?img=3"}
+          src={user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${apiClient.defaults.baseURL.replace('/api/v1', '')}${user.avatar}`) : "https://i.pravatar.cc/100?img=3"}
           alt="Profile"
           className="w-12 h-12 rounded-full object-cover border border-gray-200"
         />
         <div className="min-w-0">
-          <h4 className="text-sm font-bold text-gray-900 truncate">{user?.name || "Loading..."}</h4>
-          <p className="text-xs text-gray-400 truncate">{user?.email || ""}</p>
+          <h4 className="text-sm font-bold text-gray-900 truncate">{isLoading ? "Loading..." : (user?.name || "User")}</h4>
+          <p className="text-xs text-gray-400 truncate">{user?.email || "No email provided"}</p>
         </div>
       </div>
           <PreferenceAndPrivacy 
@@ -52,7 +54,17 @@ export default function Settings() {
         </div>
         <AccountSettings 
           user={user} 
-          onUpdate={(data) => updateProfileMutation.mutate(data)}
+          onUpdate={(data) => {
+            const toastId = toast.loading("Saving changes...");
+            updateProfileMutation.mutate(data, {
+              onSuccess: () => {
+                toast.update(toastId, { render: "Profile updated successfully!", type: "success", isLoading: false, autoClose: 3000 });
+              },
+              onError: (error) => {
+                toast.update(toastId, { render: "Failed to update profile", type: "error", isLoading: false, autoClose: 3000 });
+              }
+            });
+          }}
           isUpdating={updateProfileMutation.isPending}
         />
       </section>

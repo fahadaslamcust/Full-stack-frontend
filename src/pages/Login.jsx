@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import { useLogin } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +22,7 @@ export default function Login() {
         },
         onError: (error) => {
           console.error("Login failed:", error);
-          // Optional: handle error display (e.g. alert or toast)
-          alert(error.response?.data?.message || "Login failed");
+          toast.error(error.response?.data?.message || "Login failed");
         }
       }
     );
@@ -69,7 +69,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="www..@gmail.com"
-              className="w-full border-b border-gray-300 py-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
+              className="w-full border-b border-gray-300 py-2 px-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
               required
             />
           </div>
@@ -85,7 +85,7 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="**********"
-                className="w-full border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
+                className="w-full border-b border-gray-300 py-2 px-2 pr-8 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
                 required
               />
               <button

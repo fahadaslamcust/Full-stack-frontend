@@ -30,7 +30,10 @@ export const useCreatePost = () => {
   
   return useMutation({
     mutationFn: async (postData) => {
-      const response = await apiClient.post('/posts/', postData);
+      const isFormData = postData instanceof FormData;
+      const response = await apiClient.post('/posts/', postData, {
+        headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : {},
+      });
       return response.data.data;
     },
     onSuccess: () => {
@@ -91,6 +94,33 @@ export const useDeletePost = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+};
+
+export const useStories = () => {
+  return useQuery({
+    queryKey: ['stories'],
+    queryFn: async () => {
+      const response = await apiClient.get('/stories/');
+      return response.data.data;
+    },
+    enabled: !!localStorage.getItem('token'),
+    retry: false,
+  });
+};
+
+export const useCreateStory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (formData) => {
+      const response = await apiClient.post('/stories/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stories'] });
     },
   });
 };

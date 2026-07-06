@@ -31,7 +31,7 @@ export const useSendMessage = () => {
   
   return useMutation({
     mutationFn: async ({ receiverId, content }) => {
-      const response = await apiClient.post(`/messages/send/${receiverId}`, { content });
+      const response = await apiClient.post(`/messages/send/${receiverId}`, { text: content });
       return response.data.data;
     },
     onSuccess: (data, variables) => {

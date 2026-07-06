@@ -1,9 +1,12 @@
 import { useNetwork } from "../../hooks/useUsers";
+import { useNavigate } from "react-router-dom";
+import apiClient from "../../api/client";
 
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&auto=format&fit=crop&q=60";
 
 export default function NotificationsPanel() {
   const { data: network, isLoading } = useNetwork();
+  const navigate = useNavigate();
 
   const networkList = network ? [...(network.followers || []), ...(network.following || [])] : [];
   // Deduplicate
@@ -45,13 +48,18 @@ export default function NotificationsPanel() {
             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Your Network</h3>
             {uniqueNetwork.slice(0, 6).map((user, index) => {
               const name = user.name || "User";
-              const avatar = user.profilePicture || FALLBACK_IMG;
+              const userAvatarRaw = user.avatar || user.profilePicture || null;
+              const avatar = userAvatarRaw ? (userAvatarRaw.startsWith('http') ? userAvatarRaw : `${apiClient.defaults.baseURL.replace('/api/v1', '')}${userAvatarRaw}`) : FALLBACK_IMG;
               const timeAgo = user.createdAt
                 ? new Date(user.createdAt).toLocaleDateString()
                 : "Recently";
 
               return (
-                <div key={user._id || index} className="flex items-center justify-between gap-3 group cursor-pointer">
+                <div 
+                  key={user._id || index} 
+                  onClick={() => navigate(`/dashboard/user/${user._id || user.id}`)}
+                  className="flex items-center justify-between gap-3 group cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-xl transition"
+                >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <img className="w-9 h-9 rounded-full object-cover border border-gray-100 shrink-0" src={avatar} alt={name} />
                     <div className="min-w-0">

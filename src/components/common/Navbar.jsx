@@ -1,8 +1,13 @@
 import { Menu, Bell } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useCurrentUser } from "../../hooks/useUsers";
 
 export default function Navbar({ onMenuClick }) {
   const location = useLocation();
+  const { data: currentUser } = useCurrentUser();
+  
+  const userAvatarRaw = currentUser?.avatar || (() => { try { return JSON.parse(localStorage.getItem('user') || '{}').avatar; } catch { return null; } })();
+  const userAvatar = userAvatarRaw ? (userAvatarRaw.startsWith('http') ? userAvatarRaw : `http://localhost:5000${userAvatarRaw}`) : null;
   const getHeaderTitle = () => {
     const path = location.pathname;
      if (path.includes("events")) return "Events";
@@ -37,12 +42,16 @@ export default function Navbar({ onMenuClick }) {
         </button>
 
         {/* Small User Image Status Circle */}
-        <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-200 ml-1 cursor-pointer">
-          <img 
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=60" 
-            alt="Profile View" 
-            className="w-full h-full object-cover"
-          />
+        <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-200 ml-1 cursor-pointer bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+          {userAvatar ? (
+            <img 
+              src={userAvatar} 
+              alt="Profile View" 
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            (currentUser?.name || "U").charAt(0).toUpperCase()
+          )}
         </div>
       </div>
 

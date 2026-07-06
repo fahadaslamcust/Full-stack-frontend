@@ -4,19 +4,28 @@ import { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useInbox, useChat, useSendMessage } from "../hooks/useMessages";
 
+import { useCurrentUser } from "../hooks/useUsers";
+import EmojiPicker from "emoji-picker-react";
+
 const FALLBACK_AVATAR = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60";
 
-const storedUserId = (() => {
-  try { return JSON.parse(localStorage.getItem('user') || '{}')?.id || null; } catch { return null; }
-})();
-
 export default function Messages() {
+  const { data: currentUser } = useCurrentUser();
+  const currentUserId = currentUser?._id || currentUser?.id || (() => {
+    try { return JSON.parse(localStorage.getItem('user') || '{}')?.id || null; } catch { return null; }
+  })();
   const { isSidebarOpen } = useOutletContext();
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(() => {
+    if (location.state?.targetUser) {
+      return { otherUser: location.state.targetUser, lastMessage: null };
+    }
+    return null;
+  });
   const [isChatListOpen, setIsChatListOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isCalling, setIsCalling] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef(null);
 
   const { data: inbox, isLoading: inboxLoading } = useInbox();
@@ -24,7 +33,10 @@ export default function Messages() {
   const { data: messages, isLoading: chatLoading } = useChat(targetUserId);
   const sendMutation = useSendMessage();
 
-  const inboxList = Array.isArray(inbox) ? inbox : [];
+  const inboxList = Array.isArray(inbox) ? inbox.map(conv => {
+    const otherUser = conv.otherUser || (conv.participants && conv.participants.find(p => p._id !== currentUserId && p.id !== currentUserId)) || conv.participants?.[0];
+    return { ...conv, otherUser };
+  }) : [];
 
   const filteredInbox = inboxList.filter((conv) => {
     const name = conv.otherUser?.name || "";
@@ -41,7 +53,10 @@ export default function Messages() {
     if (!messageText.trim() || !targetUserId) return;
     sendMutation.mutate(
       { receiverId: targetUserId, content: messageText.trim() },
-      { onSuccess: () => setMessageText("") }
+      { onSuccess: () => {
+          setMessageText("");
+          setShowEmojiPicker(false);
+      } }
     );
   };
 
@@ -76,7 +91,7 @@ export default function Messages() {
               return (
                 <div key={user?._id} className="relative flex-shrink-0 cursor-pointer group" onClick={() => { setSelectedChat(conv); if (window.innerWidth < 768) setIsChatListOpen(false); }}>
                   <img
-                    src={user?.profilePicture || FALLBACK_AVATAR}
+                    src={user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `http://localhost:5000${user.avatar}`) : FALLBACK_AVATAR}
                     className="w-12 h-12 rounded-full border-2 border-blue-500 p-0.5 object-cover transform group-hover:scale-105 transition duration-200"
                     alt={user?.name}
                   />
@@ -126,7 +141,7 @@ export default function Messages() {
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <div className="relative flex-shrink-0">
-                      <img src={user?.profilePicture || FALLBACK_AVATAR} alt="" className="w-10 h-10 rounded-full object-cover" />
+                      <img src={user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `http://localhost:5000${user.avatar}`) : FALLBACK_AVATAR} alt="" className="w-10 h-10 rounded-full object-cover" />
                       <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -165,7 +180,7 @@ export default function Messages() {
                   </svg>
                 </button>
                 <div className="relative flex-shrink-0">
-                  <img src={selectedChat.otherUser?.profilePicture || FALLBACK_AVATAR} className="w-10 h-10 rounded-full object-cover" alt="" />
+                  <img src={selectedChat.otherUser?.avatar ? (selectedChat.otherUser.avatar.startsWith('http') ? selectedChat.otherUser.avatar : `http://localhost:5000${selectedChat.otherUser.avatar}`) : FALLBACK_AVATAR} className="w-10 h-10 rounded-full object-cover" alt="" />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />
                 </div>
                 <div className="min-w-0">
@@ -174,14 +189,6 @@ export default function Messages() {
                   </h3>
                   <p className="text-[11px] font-medium text-green-500">Online</p>
                 </div>
-              </div>
-              <div className="flex gap-1.5">
-                <button onClick={() => setIsCalling(true)} className="w-9 h-9 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl flex items-center justify-center transition">
-                  <Phone size={16} />
-                </button>
-                <button className="w-9 h-9 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl flex items-center justify-center transition">
-                  <Video size={16} />
-                </button>
               </div>
             </div>
 
@@ -197,7 +204,7 @@ export default function Messages() {
                 </div>
               ) : (
                 messages.map((msg, i) => {
-                  const isOwn = msg.sender === storedUserId || msg.sender?._id === storedUserId;
+                  const isOwn = msg.sender === currentUserId || msg.sender?._id === currentUserId || msg.sender?.id === currentUserId;
                   return (
                     <div key={msg._id || i} className={`flex ${isOwn ? "justify-end" : "justify-start"} w-full`}>
                       <div className={`max-w-[75%] sm:max-w-md px-4 py-2.5 rounded-2xl text-xs sm:text-sm break-words ${isOwn ? "bg-blue-500 text-white rounded-tr-none shadow-xs" : "bg-white text-gray-800 rounded-tl-none border border-gray-100 shadow-xs"}`}>
@@ -214,13 +221,32 @@ export default function Messages() {
             </div>
 
             {/* Message Input */}
-            <div className="p-3 bg-white border-t border-gray-100 flex-shrink-0">
+            <div className="p-3 bg-white border-t border-gray-100 flex-shrink-0 relative">
+              {showEmojiPicker && (
+                <div className="absolute bottom-[calc(100%+8px)] left-4 z-50 shadow-xl rounded-lg overflow-hidden">
+                  <EmojiPicker 
+                    onEmojiClick={(emojiObject) => {
+                      setMessageText(prev => prev + emojiObject.emoji);
+                    }}
+                    theme="light"
+                  />
+                </div>
+              )}
               <form onSubmit={handleSend}>
                 <div className="bg-gray-100 rounded-full px-4 py-1.5 flex items-center gap-3">
-                  <Smile className="text-gray-400 w-5 h-5 flex-shrink-0 cursor-pointer hover:text-gray-600 transition" />
+                  <Smile 
+                    className="text-gray-400 w-5 h-5 flex-shrink-0 cursor-pointer hover:text-gray-600 transition" 
+                    onClick={() => setShowEmojiPicker(prev => !prev)}
+                  />
                   <input
                     value={messageText}
                     onChange={(e) => setMessageText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSend(e);
+                      }
+                    }}
                     placeholder="Type a message..."
                     className="flex-1 bg-transparent outline-none text-xs sm:text-sm min-w-0 text-gray-800"
                   />
@@ -241,7 +267,7 @@ export default function Messages() {
       {/* ====== CALL SCREEN ====== */}
       {isCalling && (
         <div className="fixed inset-0 bg-[#f8f9fa] z-50 flex flex-col items-center justify-center animate-fade-in">
-          <img src={selectedChat?.otherUser?.profilePicture || FALLBACK_AVATAR} alt="" className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover mb-4 ring-4 ring-white shadow-md" />
+          <img src={selectedChat?.otherUser?.avatar ? (selectedChat.otherUser.avatar.startsWith('http') ? selectedChat.otherUser.avatar : `http://localhost:5000${selectedChat.otherUser.avatar}`) : FALLBACK_AVATAR} alt="" className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover mb-4 ring-4 ring-white shadow-md" />
           <h2 className="text-xl font-bold text-gray-900">{selectedChat?.otherUser?.name}</h2>
           <p className="text-xs text-gray-500 mt-1 animate-pulse font-medium">Ongoing Call...</p>
           <p className="text-xs text-gray-400 mt-0.5 font-mono bg-gray-100 px-2 py-0.5 rounded-md">00:00</p>

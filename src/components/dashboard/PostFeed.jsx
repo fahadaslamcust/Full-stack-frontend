@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { usePosts, useLikePost, useCommentPost, useUpdatePost, useDeletePost } from "../../hooks/usePosts";
 import { useFollowUser, useNetwork } from "../../hooks/useUsers";
+import { useSocket } from "../../context/SocketContext";
 import { MoreHorizontal, Edit2, Trash2, X, Check } from "lucide-react";
 
 export default function PostFeed() {
@@ -21,6 +23,39 @@ export default function PostFeed() {
   const [editingPostId, setEditingPostId] = useState(null);
   const [editContent, setEditContent] = useState("");
   const [menuOpenId, setMenuOpenId] = useState(null);
+
+  const socket = useSocket();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewPost = (newPost) => {
+      queryClient.setQueryData(['posts'], (oldPosts) => {
+        if (!oldPosts) return [newPost];
+        // Prevent duplicates
+        if (oldPosts.some(p => p._id === newPost._id)) return oldPosts;
+        return [newPost, ...oldPosts];
+      });
+    };
+
+    const handlePostUpdated = (updatedPost) => {
+      queryClient.setQueryData(['posts'], (oldPosts) => {
+        if (!oldPosts) return oldPosts;
+        return oldPosts.map(post => 
+          post._id === updatedPost._id ? updatedPost : post
+        );
+      });
+    };
+
+    socket.on("new_post", handleNewPost);
+    socket.on("post_updated", handlePostUpdated);
+
+    return () => {
+      socket.off("new_post", handleNewPost);
+      socket.off("post_updated", handlePostUpdated);
+    };
+  }, [socket, queryClient]);
 
   const currentUserId = (() => {
     try { return JSON.parse(localStorage.getItem('user') || '{}')?.id || null; } catch { return null; }

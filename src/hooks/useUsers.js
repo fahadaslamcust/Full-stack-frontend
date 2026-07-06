@@ -27,6 +27,22 @@ export const useUpdateProfile = () => {
   });
 };
 
+export const useUpdateAvatar = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (formData) => {
+      const response = await apiClient.put('/users/me/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+    },
+  });
+};
+
 export const useSearchUsers = (searchParams) => {
   return useQuery({
     queryKey: ['users', 'search', searchParams],
@@ -34,7 +50,8 @@ export const useSearchUsers = (searchParams) => {
       const response = await apiClient.get('/users/search', { params: searchParams });
       return response.data.data;
     },
-    enabled: !!searchParams,
+    // Always enabled so it fetches all users initially
+    enabled: true,
   });
 };
 

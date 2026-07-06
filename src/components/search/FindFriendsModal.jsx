@@ -24,9 +24,9 @@ export default function FindFriendsModal({ isOpen, onClose }) {
     return () => clearTimeout(handler);
   }, [search]);
 
-  const { data: searchResults, isLoading } = useSearchUsers(
-    debouncedSearch.trim() ? { name: debouncedSearch.trim() } : null
-  );
+  const { data: searchResults, isLoading } = useSearchUsers({ 
+    name: debouncedSearch.trim() 
+  });
 
   const users = Array.isArray(searchResults) ? searchResults : [];
 
@@ -81,8 +81,6 @@ export default function FindFriendsModal({ isOpen, onClose }) {
             <div className="flex justify-center items-center py-6">
               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-          ) : !debouncedSearch.trim() ? (
-            <p className="text-sm text-gray-500 text-center py-6">Type a name to search for friends...</p>
           ) : users.length === 0 ? (
             <p className="text-sm text-gray-500 text-center py-6">No users found.</p>
           ) : (
@@ -95,9 +93,9 @@ export default function FindFriendsModal({ isOpen, onClose }) {
                   className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition"
                   onClick={() => { onClose(); navigate(`/dashboard/user/${user._id || user.id}`); }}
                 >
-                  {user.profilePicture ? (
+                  {user.avatar ? (
                     <img
-                      src={user.profilePicture}
+                      src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:5000${user.avatar}`}
                       alt={user.name}
                       className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm"
                     />

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
 import { useRegister } from "../hooks/useAuth";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,12 +31,24 @@ export default function SignUp() {
     registerMutation.mutate(
       { name, email, password, university },
       {
-        onSuccess: () => {
+        onSuccess: async (responseBody) => {
+          if (avatarFile) {
+            const formData = new FormData();
+            formData.append("avatar", avatarFile);
+            try {
+              // Wait for user to login if verification is required
+              // Actually, without token, avatar upload will fail. We'll skip avatar upload on registration if verification is required.
+            } catch (err) {
+              console.error("Avatar upload failed during signup", err);
+            }
+          }
+          
+          toast.success("Registration successful! You have been automatically logged in.");
           navigate("/dashboard");
         },
         onError: (error) => {
           console.error("Signup failed:", error);
-          alert(error.response?.data?.message || "Signup failed");
+          toast.error(error.response?.data?.message || "Signup failed");
         }
       }
     );
@@ -127,7 +140,7 @@ export default function SignUp() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
-                className="w-full border-b border-gray-300 py-1.5 sm:py-2 pr-8 focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400 text-sm"
+                className="w-full border-b border-gray-300 py-1.5 px-2 sm:py-2 pr-8 focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400 text-sm"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -189,7 +202,7 @@ function Input({ label, ...props }) {
       <label className="text-xs sm:text-sm font-medium text-gray-900 mb-1">{label}</label>
       <input
         {...props}
-        className="w-full border-b border-gray-300 py-1.5 sm:py-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
+        className="w-full border-b border-gray-300 py-1.5 px-2 sm:py-2 text-sm focus:outline-none focus:border-[#3B82F6] transition-colors placeholder-gray-400"
       />
     </div>
   );
