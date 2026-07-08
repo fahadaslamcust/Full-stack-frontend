@@ -1,7 +1,12 @@
 import { X, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSearchUsers, useFollowUser, useNetwork, useUnfollowUser } from "../../hooks/useUsers";
+import {
+  useSearchUsers,
+  useFollowUser,
+  useNetwork,
+  useUnfollowUser,
+} from "../../hooks/useUsers";
 
 const categories = ["All", "Cs", "Software Engineer", "Art"];
 
@@ -14,8 +19,8 @@ export default function FindFriendsModal({ isOpen, onClose }) {
   const followMutation = useFollowUser();
   const unfollowMutation = useUnfollowUser();
   const { data: network } = useNetwork();
-  
-  const followingIds = (network?.following || []).map(u => u._id || u.id);
+
+  const followingIds = (network?.following || []).map((u) => u._id || u.id);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -24,8 +29,8 @@ export default function FindFriendsModal({ isOpen, onClose }) {
     return () => clearTimeout(handler);
   }, [search]);
 
-  const { data: searchResults, isLoading } = useSearchUsers({ 
-    name: debouncedSearch.trim() 
+  const { data: searchResults, isLoading } = useSearchUsers({
+    name: debouncedSearch.trim(),
   });
 
   const users = Array.isArray(searchResults) ? searchResults : [];
@@ -82,20 +87,29 @@ export default function FindFriendsModal({ isOpen, onClose }) {
               <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : users.length === 0 ? (
-            <p className="text-sm text-gray-500 text-center py-6">No users found.</p>
+            <p className="text-sm text-gray-500 text-center py-6">
+              No users found.
+            </p>
           ) : (
             users.map((user) => (
               <div
                 key={user._id || user.id}
                 className="flex items-center justify-between gap-3 py-0.5"
               >
-                <div 
+                <div
                   className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition"
-                  onClick={() => { onClose(); navigate(`/dashboard/user/${user._id || user.id}`); }}
+                  onClick={() => {
+                    onClose();
+                    navigate(`/dashboard/user/${user._id || user.id}`);
+                  }}
                 >
                   {user.avatar ? (
                     <img
-                      src={user.avatar.startsWith('http') ? user.avatar : `http://localhost:5000${user.avatar}`}
+                      src={
+                        user.avatar.startsWith("http")
+                          ? user.avatar
+                          : `https://full-stack-backend-d1g9.onrender.com${user.avatar}`
+                      }
                       alt={user.name}
                       className="w-10 h-10 rounded-full object-cover border border-gray-100 shadow-sm"
                     />
@@ -118,7 +132,7 @@ export default function FindFriendsModal({ isOpen, onClose }) {
                 </div>
 
                 {followingIds.includes(user._id || user.id) ? (
-                  <button 
+                  <button
                     onClick={() => unfollowMutation.mutate(user._id || user.id)}
                     disabled={unfollowMutation.isPending}
                     className="px-5 py-1.5 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-700 text-xs font-semibold rounded-full transition shadow-sm"
@@ -126,7 +140,7 @@ export default function FindFriendsModal({ isOpen, onClose }) {
                     Unfollow
                   </button>
                 ) : (
-                  <button 
+                  <button
                     onClick={() => followMutation.mutate(user._id || user.id)}
                     disabled={followMutation.isPending}
                     className="px-5 py-1.5 bg-[#3B82F6] hover:bg-blue-600 disabled:bg-blue-300 text-white text-xs font-semibold rounded-full transition shadow-sm hover:shadow"

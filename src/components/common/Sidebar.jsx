@@ -11,21 +11,46 @@ const Sidebar = () => {
 
   // Read user from localStorage as a fast fallback before query resolves
   const storedUser = (() => {
-    try { return JSON.parse(localStorage.getItem('user') || '{}'); } catch { return {}; }
+    try {
+      return JSON.parse(localStorage.getItem("user") || "{}");
+    } catch {
+      return {};
+    }
   })();
 
   const userName = currentUser?.name || storedUser?.name || "User";
-  const userRole = currentUser?.university || storedUser?.university || "Student";
+  const userRole =
+    currentUser?.university || storedUser?.university || "Student";
   const userAvatarRaw = currentUser?.avatar || storedUser?.avatar || null;
-  const userAvatar = userAvatarRaw ? (userAvatarRaw.startsWith('http') ? userAvatarRaw : `http://localhost:5000${userAvatarRaw}`) : null;
+  const userAvatar = userAvatarRaw
+    ? userAvatarRaw.startsWith("http")
+      ? userAvatarRaw
+      : `https://full-stack-backend-d1g9.onrender.com${userAvatarRaw}`
+    : null;
 
   const menuItems = [
     { name: "Home", path: "/dashboard", icon: "/icons/home.png" },
-    { name: "Explore Events", path: "/dashboard/events", icon: "/icons/event.png" },
-    { name: "Messages", path: "/dashboard/messages", icon: "/icons/messages.png" },
-    { name: "Settings", path: "/dashboard/settings", icon: "/icons/settings.png" },
+    {
+      name: "Explore Events",
+      path: "/dashboard/events",
+      icon: "/icons/event.png",
+    },
+    {
+      name: "Messages",
+      path: "/dashboard/messages",
+      icon: "/icons/messages.png",
+    },
+    {
+      name: "Settings",
+      path: "/dashboard/settings",
+      icon: "/icons/settings.png",
+    },
     { name: "Search", path: "/dashboard/search", icon: "/icons/search.png" },
-    { name: "Notifications", path: "/dashboard/notifications", icon: "/icons/notifications.png" },
+    {
+      name: "Notifications",
+      path: "/dashboard/notifications",
+      icon: "/icons/notifications.png",
+    },
   ];
 
   const handleLogout = () => {
@@ -68,7 +93,7 @@ const Sidebar = () => {
                       isSelected
                         ? "brightness-0 invert"
                         : "brightness-0 opacity-60"
-                      }`}
+                    }`}
                   />
                   <span>{item.name}</span>
                 </Link>
@@ -78,7 +103,7 @@ const Sidebar = () => {
 
           {/* Create Post Button */}
           <div className="pl-2 mt-auto">
-            <button 
+            <button
               onClick={() => navigate("/create-post")}
               className="w-10 h-10 flex items-center justify-center space-x-2 bg-[#4285F4] hover:bg-blue-600 text-white font-medium text-sm rounded-full transition-all shadow-sm hover:shadow-md"
             >
@@ -107,12 +132,24 @@ const Sidebar = () => {
             </div>
           )}
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-900 truncate">{userName}</p>
+            <p className="text-sm font-semibold text-gray-900 truncate">
+              {userName}
+            </p>
             <p className="text-xs text-gray-400 truncate">{userRole}</p>
           </div>
         </div>
-        <svg className="w-4 h-4 text-gray-400 group-hover:text-red-400 shrink-0 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        <svg
+          className="w-4 h-4 text-gray-400 group-hover:text-red-400 shrink-0 transition"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+          />
         </svg>
       </div>
     </aside>
