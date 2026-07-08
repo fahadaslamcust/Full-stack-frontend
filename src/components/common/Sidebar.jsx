@@ -45,7 +45,11 @@ const Sidebar = () => {
       path: "/dashboard/settings",
       icon: "/icons/settings.png",
     },
-    { name: "Search", path: "/dashboard/search", icon: "/icons/search.png" },
+    {
+      name: "Search Friends",
+      path: "/dashboard/search",
+      icon: "/icons/search.png",
+    },
     {
       name: "Notifications",
       path: "/dashboard/notifications",

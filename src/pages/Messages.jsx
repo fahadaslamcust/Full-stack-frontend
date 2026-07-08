@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import SearchInput from "../components/common/SearchInput";
 import { useState, useRef, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useLocation } from "react-router-dom";
 import { useInbox, useChat, useSendMessage } from "../hooks/useMessages";
 
 import { useCurrentUser } from "../hooks/useUsers";
@@ -20,6 +20,8 @@ const FALLBACK_AVATAR =
   "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=60";
 
 export default function Messages() {
+  const location = useLocation();
+
   const { data: currentUser } = useCurrentUser();
   const currentUserId =
     currentUser?._id ||
@@ -33,8 +35,8 @@ export default function Messages() {
     })();
   const { isSidebarOpen } = useOutletContext();
   const [selectedChat, setSelectedChat] = useState(() => {
-    if (location.state?.targetUser) {
-      return { otherUser: location.state.targetUser, lastMessage: null };
+    if (location?.state?.targetUser) {
+      return { otherUser: location?.state.targetUser, lastMessage: null };
     }
     return null;
   });
@@ -77,15 +79,19 @@ export default function Messages() {
   const handleSend = (e) => {
     e.preventDefault();
     if (!messageText.trim() || !targetUserId) return;
+
     sendMutation.mutate(
       { receiverId: targetUserId, content: messageText.trim() },
-      {
-        onSuccess: () => {
-          setMessageText("");
-          setShowEmojiPicker(false);
-        },
-      },
+      // {
+      //   onSuccess: () => {
+      //     setMessageText("");
+      //     setShowEmojiPicker(false);
+      //   },
+      // },
     );
+
+    setMessageText("");
+    setShowEmojiPicker(false);
   };
 
   return (
@@ -109,7 +115,7 @@ export default function Messages() {
             size={18}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search messages..."
+            placeholder="Search messages of Your Friend..."
           />
         </div>
 
@@ -395,7 +401,13 @@ export default function Messages() {
                     disabled={sendMutation.isPending || !messageText.trim()}
                     className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 hover:bg-blue-600 disabled:bg-blue-300 transition shadow-xs"
                   >
-                    <Send size={14} className="text-white ml-0.5" />
+                    {sendMutation.isPending ? (
+                      <div className="flex justify-center items-center py-6">
+                        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    ) : (
+                      <Send size={14} className="text-white ml-0.5" />
+                    )}
                   </button>
                 </div>
               </form>
