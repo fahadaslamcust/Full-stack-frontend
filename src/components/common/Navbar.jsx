@@ -1,9 +1,11 @@
 import { Menu, Bell } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useCurrentUser } from "../../hooks/useUsers";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar({ onMenuClick }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: currentUser } = useCurrentUser();
 
   const userAvatarRaw =
@@ -47,13 +49,17 @@ export default function Navbar({ onMenuClick }) {
       </div>
 
       <div className="flex items-center gap-2">
-        <button className="p-1.5 hover:bg-gray-50 text-gray-500 rounded-full relative transition">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+        <button
+          onClick={() => navigate("/notifications")}
+          className="p-1.5 hover:bg-gray-50 text-gray-500 rounded-full relative transition"
+        >
+          <Bell />
         </button>
 
         {/* Small User Image Status Circle */}
-        <div className="w-7 h-7 rounded-full overflow-hidden border border-gray-200 ml-1 cursor-pointer bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+        <div onClick={() => navigate("/dashboard/settings")}
+          className="w-7 h-7 rounded-full overflow-hidden border border-gray-200 ml-1 cursor-pointer bg-blue-500 flex items-center justify-center text-white text-xs font-bold"
+        >
           {userAvatar ? (
             <img
               src={userAvatar}
