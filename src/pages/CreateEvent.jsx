@@ -62,7 +62,7 @@ export default function CreateEvent() {
 
           {/* Reusable Dynamic DateTime Picker */}
           <InputField
-            type="datetime-local"
+            type="date"
             placeholder="Event Date & Time"
             value={formData.eventDate}
             icon={Calendar}
