@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
 import AuthLayout from "../layouts/AuthLayout";
 import { useRegister } from "../hooks/useAuth";
 import { toast } from "react-toastify";
-
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { useFacebookAuth } from "../hooks/useFacebookAuth";
+import FacebookLoginButton from "../components/auth/FacebookLoginButton";
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
-
-  // Form state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [university, setUniversity] = useState("");
   const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
   const registerMutation = useRegister();
-
+  const googleAuthMutation = useGoogleAuth();
+  const facebookAuthMutation = useFacebookAuth();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -53,7 +54,39 @@ export default function SignUp() {
       }
     );
   };
+ const handleGoogleSuccess = (credentialResponse) => {
+  googleAuthMutation.mutate(credentialResponse.credential, {
+    onSuccess: () => {
+      toast.success("Successfully signed up with Google!");
+      navigate("/");
+    },
+    onError: (error) => {
+      console.error("Google signup failed:", error);
+      toast.error(error.response?.data?.message || "Google signup failed");
+    }
+  });
+};
 
+const handleGoogleError = () => {
+  console.error("Google login error");
+  toast.error("Google login failed");
+};
+
+const handleFacebookSuccess = (accessToken) => {
+  facebookAuthMutation.mutate(accessToken, {
+    onSuccess: () => {
+      toast.success("Successfully signed up with Facebook!");
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || "Facebook signup failed");
+    },
+  });
+};
+
+const handleFacebookError = () => {
+  toast.error("Facebook signup failed");
+};
   return (
     <AuthLayout
       leftContent={
@@ -182,8 +215,29 @@ export default function SignUp() {
         >
           {registerMutation.isPending ? "Signing Up..." : "Sign Up"}
         </button>
-
-        {/* Alternative Nav link */}
+{/* Divider */}
+        <div className="flex items-center my-6">
+          <div className="flex-1 border-t border-gray-300"></div>
+          <span className="px-3 text-xs text-gray-500">OR</span>
+          <div className="flex-1 border-t border-gray-300"></div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <div className="flex-1 flex justify-center [&>div]:w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="signup_with"
+            />
+          </div>
+          <div className="flex-1">
+            <FacebookLoginButton
+              mode="signup"
+              onSuccess={handleFacebookSuccess}
+              onError={handleFacebookError}
+              disabled={facebookAuthMutation.isPending}
+            />
+          </div>
+        </div>
         <div className="text-center text-xs text-gray-500 mt-5">
           Already have an account?{" "}
           <a href="/" className="text-[#3B82F6] hover:underline font-medium ml-0.5">

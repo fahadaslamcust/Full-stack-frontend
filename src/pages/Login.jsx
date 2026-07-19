@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import AuthLayout from "../layouts/AuthLayout";
 import { useLogin } from "../hooks/useAuth";
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { useFacebookAuth } from "../hooks/useFacebookAuth";
+import FacebookLoginButton from "../components/auth/FacebookLoginButton";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -11,6 +15,40 @@ export default function Login() {
 
   const navigate = useNavigate();
   const loginMutation = useLogin();
+  const googleAuthMutation = useGoogleAuth();
+  const facebookAuthMutation = useFacebookAuth();
+
+  const handleGoogleSuccess = (credentialResponse) => {
+    googleAuthMutation.mutate(credentialResponse.credential, {
+      onSuccess: () => {
+        toast.success("Successfully signed in with Google!");
+        navigate("/dashboard");
+      },
+      onError: (error) => {
+        toast.error(error.response?.data?.message || "Google sign in failed");
+      },
+    });
+  };
+
+  const handleGoogleError = () => {
+    toast.error("Google sign in failed");
+  };
+
+  const handleFacebookSuccess = (accessToken) => {
+    facebookAuthMutation.mutate(accessToken, {
+      onSuccess: () => {
+        toast.success("Successfully signed in with Facebook!");
+        navigate("/dashboard");
+      },
+      onError: (error) => {
+        toast.error(error.response?.data?.message || "Facebook sign in failed");
+      },
+    });
+  };
+
+  const handleFacebookError = () => {
+    toast.error("Facebook sign in failed");
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -135,6 +173,31 @@ export default function Login() {
         >
           {loginMutation.isPending ? "Signing In..." : "Sign In"}
         </button>
+
+        {/* Divider */}
+        <div className="flex items-center my-5">
+          <div className="flex-1 border-t border-gray-300"></div>
+          <span className="px-3 text-xs text-gray-500">OR</span>
+          <div className="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <div className="flex-1 flex justify-center [&>div]:w-full">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              text="signin_with"
+            />
+          </div>
+          <div className="flex-1">
+            <FacebookLoginButton
+              mode="signin"
+              onSuccess={handleFacebookSuccess}
+              onError={handleFacebookError}
+              disabled={facebookAuthMutation.isPending}
+            />
+          </div>
+        </div>
 
         {/* Alternative Route Link */}
         <div className="mt-5 text-center text-xs text-gray-500">

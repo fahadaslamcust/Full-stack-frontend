@@ -57,12 +57,17 @@ apiClient.interceptors.response.use(
         window.location.pathname === "/signup";
 
       if (!isAuthCall && !isAlreadyOnLogin) {
-        console.warn(
-          "[API Auth] Session expired – clearing token and redirecting to login",
-        );
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/";
+        // Only clear token and redirect if the token actually exists —
+        // avoids a race condition where /users/me fires before the token is saved
+        const token = localStorage.getItem("token");
+        if (token) {
+          console.warn(
+            "[API Auth] Session expired – clearing token and redirecting to login",
+          );
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/";
+        }
       }
     }
     return Promise.reject(error);

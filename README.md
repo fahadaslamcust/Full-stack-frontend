@@ -1,18 +1,54 @@
-# React + Vite
+# campus-connect (Frontend)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Frontend Technology / Stack
 
-Currently, two official plugins are available:
+This project is a **React single-page application (SPA)** built with **Vite**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Core framework
+- **React 19** (`react`, `react-dom`)
+- **React Router DOM** (`react-router-dom`) for client-side routing
 
-## React Compiler
+### Build & tooling
+- **Vite** (dev server + production bundling)
+- **ESLint** for linting
+- **Vite React plugin** (`@vitejs/plugin-react`)
+- **React Compiler** enabled via the React Vite plugin preset
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Styling
+- **Tailwind CSS** (`tailwindcss`, `@tailwindcss/vite`)
 
-Note: This will impact Vite dev & build performances.
+### State / data fetching
+- **@tanstack/react-query** for server-state management
+- **React Query Devtools** (`@tanstack/react-query-devtools`)
 
-## Expanding the ESLint configuration
+### UI & UX libraries
+- **Toast notifications**: `react-toastify`
+- **Icons**: `lucide-react`, `react-icons`
+- **Emoji picker**: `emoji-picker-react`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Internationalization (i18n)
+- **i18next** + **react-i18next**
+- Locales located in `src/locales/` (e.g., `en.json`, `fr.json`, `ur.json`)
+
+### Authentication-related integration
+- **Google OAuth** via `@react-oauth/google`
+- Also includes code/hooks for **Facebook/Google auth** (see `src/components/auth/` and `src/hooks/`)
+
+### Networking (API + realtime)
+- **REST API client**: `axios` (`src/api/client.js`)
+  - Base URL: `https://full-stack-backend-d1g9.onrender.com/api/v1`
+  - Adds `Authorization: Bearer <token>` from `localStorage`
+- **Realtime**: `socket.io-client`
+  - Socket connection is managed by `src/context/SocketContext.jsx`
+
+## Project Purpose (high level)
+The UI provides pages for login/signup, dashboard features (events, posts, messages, search, settings, notifications), and user profile flows, with realtime messaging support through Socket.IO.
+
+---
+
+## Scripts
+- `npm run dev` — start Vite dev server
+- `npm run build` — build for production
+- `npm run preview` — preview production build
+- `npm run lint` — run ESLint
+
