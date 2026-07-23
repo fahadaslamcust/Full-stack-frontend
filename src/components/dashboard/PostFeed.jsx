@@ -154,7 +154,7 @@ export default function PostFeed() {
         const authorRole = post.author?.bio || post.author?.university || "User";
         const avatar = post.author?.profilePicture || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&auto=format&fit=crop&q=60";
         const time = new Date(post.createdAt).toLocaleDateString() || "Just now";
-        const isLiked = post.likes?.includes("currentUserId") || false; // Ideally backend sends `isLiked`
+        const isLiked = post.likes?.includes(currentUserId) || false; // Ideally backend sends `isLiked`
         const likesCount = post.likes?.length || 0;
         const commentsCount = post.comments?.length || 0;
         const content = post.content || "";
@@ -276,7 +276,7 @@ export default function PostFeed() {
                 onClick={() => handleLike(post._id || post.id)}
                 disabled={likeMutation.isPending}
                 className={`flex items-center space-x-1.5 font-semibold group ${
-                  isLiked ? "text-blue-500" : "text-gray-500"
+                  isLiked ? "text-magenta-500" : "text-gray-500"
                 } ${likeMutation.isPending ? "opacity-50" : ""}`}
               >
                 <svg
